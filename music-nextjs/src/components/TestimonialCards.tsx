@@ -2,12 +2,12 @@ import { InfiniteMovingCards } from "./ui/infinite-moving-cards";
 
 export default function MusicSchoolTestimonials() {
   return (
-    <div className="h-[50rem] rounded-md flex flex-col antialiased bg-white dark:bg-black dark:bg-dot-white/[0.3] items-center justify-center relative overflow-hidden ">
-      <h2 className="text-3xl font-bold text-center mb-8 z-10">
+    <div className="h-[65rem] rounded-md flex flex-col antialiased bg-white dark:bg-black dark:bg-dot-white/[0.3] items-center justify-center relative overflow-hidden ">
+      <h2 className="text-4xl font-bold text-center mb-10 z-10">
         Hear our Harmony: Voices of success
       </h2>
-      <div className="flex justify-center w-full overflow-hidden px-4 sm:px-6 lg:px-8">
-        <div className="w-full max-w-6xl">
+      <div className="flex justify-center w-full overflow-hidden px-4 sm:px-6 lg:px-4">
+        <div className="w-full max-w-7xl">
           <InfiniteMovingCards
             items={musicSchoolTestimonials}
             direction="right"
