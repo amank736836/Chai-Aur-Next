@@ -18,7 +18,7 @@ export default function FeaturedCourses() {
     (course: Course) => course.isFeatured
   );
   return (
-    <div className="py-12 min-h-[60rem]">
+    <div className="py-12 min-h-[60rem] bg-gray-900">
       <div className="text-center mt-[10rem]">
         <h2 className="text-base text-teal-600 font-semibold tracking-wide uppercase">
           FEATURED COURSES
