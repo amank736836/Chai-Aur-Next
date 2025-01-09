@@ -3,7 +3,7 @@ import { StickyScroll } from "./ui/sticky-scroll-reveal";
 
 export default function WhyChooseUs() {
   return (
-    <div className=" min-h-[56rem] pt-[10rem]">
+    <div className=" min-h-[65rem] pt-[10rem]">
       <StickyScroll content={musicSchoolContent} />
     </div>
   );
