@@ -1,14 +1,14 @@
+import User from "@/models/userModel";
 import nodemailer from "nodemailer";
+import bcryptjs from "bcryptjs";
 
-const transporter = nodemailer.createTransport({
-  host: "amankarguwal0@gmail.com",
-  service: "gmail",
+const transport = nodemailer.createTransport({
+  host: "sandbox.smtp.mailtrap.io",
+  port: 2525,
   auth: {
-    user: process.env.EMAIL,
-    pass: process.env.EMAIL_PASSWORD,
+    user: process.env.NODEMAILER_USER,
+    pass: process.env.NODEMAILER_PASS,
   },
-  secure: true,
-  port: 465,
 });
 
 export const sendEmail = async ({
@@ -21,33 +21,53 @@ export const sendEmail = async ({
   userId: string;
 }) => {
   try {
-    // TODO : Add your email and password in .env file and configure mail for usage
+    const hashedToken = await bcryptjs.hash(userId.toString(), 10);
+
+    if (emailType === "VERIFY") {
+      await User.findByIdAndUpdate(userId, {
+        verifyToken: hashedToken,
+        verifyTokenExpires: Date.now() + 60 * 60 * 1000,
+      });
+    } else if (emailType === "RESET") {
+      await User.findByIdAndUpdate(userId, {
+        forgotPasswordToken: hashedToken,
+        forgotPasswordTokenExpiry: Date.now() + 60 * 60 * 1000,
+      });
+    }
 
     const mailOptions = {
-      from: '"Aman Kumar 👻" <amankarguwal0@gmail.com>',
+      from: '"Aman Kumar 👻" <virtuo@store.com>',
       to: email,
       subject:
         emailType === "VERIFY" ? "Verify your email" : "Reset your password",
       text:
         emailType === "VERIFY"
           ? `
-        Click on the link to verify your email: http://localhost:3000/verify/${userId}
+        Click on the link to verify your email: ${process.env.DOMAIN}/verify?token=${hashedToken}
       `
           : `
-        Click on the link to reset your password: http://localhost:3000/reset-password/${userId}
+        Click on the link to reset your password: ${process.env.DOMAIN}/reset-password?token=${hashedToken}
       `,
 
       html:
         emailType === "VERIFY"
           ? `
-        <p>Click on the link to verify your email: <a href="http://localhost:3000/verify/${userId}">Verify</a></p>
+        <p>Click on the link to verify your email: <a href="${process.env.DOMAIN}/verify?token=${hashedToken}">Verify</a></p>
+        <br>
+        or copy and paste the link below in your browser:
+        <br>
+        <p>http://localhost:3000/verify?token=${hashedToken}</p>
       `
           : `
-        <p>Click on the link to reset your password: <a href="http://localhost:3000/reset-password/${userId}">Reset Password</a></p>
+        <p>Click on the link to reset your password: <a href="${process.env.DOMAIN}/reset-password?token=${hashedToken}">Reset Password</a></p>
+        <br>
+        or copy and paste the link below in your browser:
+        <br>
+        <p>/reset-password?token=${hashedToken}</p>
       `,
     };
 
-    const mailResponse = await transporter.sendMail(mailOptions);
+    const mailResponse = await transport.sendMail(mailOptions);
 
     return {
       success: true,
