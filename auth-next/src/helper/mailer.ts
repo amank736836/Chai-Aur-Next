@@ -29,7 +29,7 @@ export const verifyEmail = async ({
       verifyTokenExpiry: Date.now() + 60 * 60 * 1000,
     });
 
-    const link = `${process.env.DOMAIN}/verify?token=${hashedToken}`;
+    const link = `${process.env.DOMAIN}/api/users/verify?token=${hashedToken}`;
 
     const mailOptions = {
       from: '"Aman Kumar 👻" <virtuo@store.com>',
@@ -76,7 +76,7 @@ export const resetPassword = async ({
       forgotPasswordTokenExpiry: Date.now() + 60 * 60 * 1000,
     });
 
-    const link = `${process.env.DOMAIN}/reset-password?token=${hashedToken}`;
+    const link = `${process.env.DOMAIN}/api/users/reset-password?token=${hashedToken}`;
 
     const mailOptions = {
       from: '"Aman Kumar 👻" <virtuo@store.com>',
