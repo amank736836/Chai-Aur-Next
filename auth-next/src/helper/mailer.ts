@@ -5,15 +5,6 @@ import bcryptjs from "bcryptjs";
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
-const transport = nodemailer.createTransport({
-  host: "sandbox.smtp.mailtrap.io",
-  port: 2525,
-  auth: {
-    user: process.env.NODEMAILER_USER,
-    pass: process.env.NODEMAILER_PASS,
-  },
-});
-
 export const verifyEmail = async ({
   email,
   userId,
@@ -25,8 +16,10 @@ export const verifyEmail = async ({
     const hashedToken = await bcryptjs.hash(userId.toString(), 10);
 
     await User.findByIdAndUpdate(userId, {
-      verifyToken: hashedToken,
-      verifyTokenExpiry: Date.now() + 60 * 60 * 1000,
+      $set: {
+        verifyToken: hashedToken,
+        verifyTokenExpiry: Date.now() + 60 * 60 * 1000,
+      },
     });
 
     const link = `${process.env.DOMAIN}/api/users/verify?token=${hashedToken}`;
@@ -42,6 +35,22 @@ export const verifyEmail = async ({
 
       html: `<p>Click on the link to verify your email: <a href="${link}">Verify : </a><a href="${link}">${link}</a></p><br>or copy and paste the link below in your browser:<br><p>${link}</p>`,
     };
+
+    if (!process.env.NODEMAILER_USER || !process.env.NODEMAILER_PASS) {
+      return NextResponse.json({
+        success: false,
+        message: "NODEMAILER_USER and NODEMAILER_PASS are required",
+      });
+    }
+
+    const transport = nodemailer.createTransport({
+      host: "sandbox.smtp.mailtrap.io",
+      port: 2525,
+      auth: {
+        user: process.env.NODEMAILER_USER,
+        pass: process.env.NODEMAILER_PASS,
+      },
+    });
 
     const mailResponse = await transport.sendMail(mailOptions);
 
@@ -89,6 +98,22 @@ export const resetPassword = async ({
 
       html: `<p>Click on the link to reset your email: <a href="${link}">Verify : </a><a href="${link}">${link}</a></p><br>or copy and paste the link below in your browser:<br><p>${link}</p>`,
     };
+
+    if (!process.env.NODEMAILER_USER || !process.env.NODEMAILER_PASS) {
+      return NextResponse.json({
+        success: false,
+        message: "NODEMAILER_USER and NODEMAILER_PASS are required",
+      });
+    }
+
+    const transport = nodemailer.createTransport({
+      host: "sandbox.smtp.mailtrap.io",
+      port: 2525,
+      auth: {
+        user: process.env.NODEMAILER_USER,
+        pass: process.env.NODEMAILER_PASS,
+      },
+    });
 
     const mailResponse = await transport.sendMail(mailOptions);
 
