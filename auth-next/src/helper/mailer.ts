@@ -1,6 +1,8 @@
+"use server";
+
 import User from "@/models/userModel";
-import nodemailer from "nodemailer";
 import bcryptjs from "bcryptjs";
+import nodemailer from "nodemailer";
 
 const transport = nodemailer.createTransport({
   host: "sandbox.smtp.mailtrap.io",
@@ -26,7 +28,7 @@ export const sendEmail = async ({
     if (emailType === "VERIFY") {
       await User.findByIdAndUpdate(userId, {
         verifyToken: hashedToken,
-        verifyTokenExpires: Date.now() + 60 * 60 * 1000,
+        verifyTokenExpiry: Date.now() + 60 * 60 * 1000,
       });
     } else if (emailType === "RESET") {
       await User.findByIdAndUpdate(userId, {
