@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { unique } from "next/dist/build/utils";
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -29,7 +28,6 @@ const userSchema = new mongoose.Schema({
   forgotPasswordToken: {
     type: String,
     default: null,
-    unique: [true, "Token already exists"],
   },
   forgotPasswordTokenExpiry: {
     type: Date,
