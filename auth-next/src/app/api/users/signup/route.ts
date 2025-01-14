@@ -40,6 +40,45 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    if (
+      username.includes(" ") ||
+      email.includes(" ") ||
+      password.includes(" ")
+    ) {
+      return NextResponse.json({
+        success: false,
+        status: 400,
+        message: "Space not allowed in username, email or password",
+      });
+    }
+
+    if (
+      username.length < 3 ||
+      password.length < 6 ||
+      email.length < 6 ||
+      email.length > 50 ||
+      username.length > 50 ||
+      password.length > 50
+    ) {
+      return NextResponse.json({
+        success: false,
+        status: 400,
+        message: "Invalid length",
+      });
+    }
+
+    if (
+      !email.includes("@") ||
+      !email.includes(".") ||
+      !username.match(/^[a-zA-Z0-9_]*$/)
+    ) {
+      return NextResponse.json({
+        success: false,
+        status: 400,
+        message: "Invalid pattern",
+      });
+    }
+
     const user = await User.findOne({ email });
 
     if (user) {
