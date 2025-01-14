@@ -37,36 +37,25 @@ export const sendEmail = async ({
       });
     }
 
+    const link =
+      emailType === "VERIFY"
+        ? `${process.env.DOMAIN}/verify?token=${hashedToken}`
+        : `${process.env.DOMAIN}/reset-password?token=${hashedToken}`;
+
     const mailOptions = {
       from: '"Aman Kumar 👻" <virtuo@store.com>',
       to: email,
       subject:
         emailType === "VERIFY" ? "Verify your email" : "Reset your password",
-      text:
-        emailType === "VERIFY"
-          ? `
-        Click on the link to verify your email: ${process.env.DOMAIN}/verify?token=${hashedToken}
-      `
-          : `
-        Click on the link to reset your password: ${process.env.DOMAIN}/reset-password?token=${hashedToken}
+      text: `
+          Copy and paste the link below in your browser to
+          ${emailType === "VERIFY" ? "verify" : "reset"} your email:
+          : ${link}
       `,
 
-      html:
-        emailType === "VERIFY"
-          ? `
-        <p>Click on the link to verify your email: <a href="${process.env.DOMAIN}/verify?token=${hashedToken}">Verify</a></p>
-        <br>
-        or copy and paste the link below in your browser:
-        <br>
-        <p>http://localhost:3000/verify?token=${hashedToken}</p>
-      `
-          : `
-        <p>Click on the link to reset your password: <a href="${process.env.DOMAIN}/reset-password?token=${hashedToken}">Reset Password</a></p>
-        <br>
-        or copy and paste the link below in your browser:
-        <br>
-        <p>/reset-password?token=${hashedToken}</p>
-      `,
+      html: `<p>Click on the link to ${
+        emailType === "VERIFY" ? "verify" : "reset"
+      } your email: <a href="${link}">Verify : </a><a href="${link}">${link}</a></p><br>or copy and paste the link below in your browser:<br><p>${link}</p>`,
     };
 
     const mailResponse = await transport.sendMail(mailOptions);
