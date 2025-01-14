@@ -14,11 +14,9 @@ export async function POST(request: NextRequest) {
   try {
     const reqBody = await request.json();
 
-    const { username, email, password } = reqBody;
+    const { id, password } = reqBody;
 
-    console.log(reqBody);
-
-    if (!email && !username) {
+    if (!id) {
       return NextResponse.json({
         success: false,
         status: 400,
@@ -34,12 +32,18 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    console.log("email", email);
+    console.log("id", id);
     console.log("password", password);
 
-    const user = await User.findOne({
-      $or: [{ email }, { username }],
-    });
+    let user;
+
+    if (id.includes("@")) {
+      user = await User.findOne({ email: id });
+      console.log("user finding by email", user);
+    } else {
+      user = await User.findOne({ username: id });
+      console.log("user finding by username", user);
+    }
 
     if (!user) {
       return NextResponse.json({
