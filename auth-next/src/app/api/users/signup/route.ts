@@ -2,14 +2,18 @@ import { connect } from "@/dbConfig/dbConfig";
 import User from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 
+import { verifyEmail } from "@/helper/mailer";
 import bcryptjs from "bcryptjs";
-import { sendEmail } from "@/helper/mailer";
 
 connect();
 
+export async function GET(request: NextRequest) {
+  return NextResponse.json({ message: "Hello World from signup" });
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const reqBody = request.json();
+    const reqBody = await request.json();
     const { username, email, password } = reqBody;
 
     if (!username) {
@@ -50,31 +54,32 @@ export async function POST(request: NextRequest) {
 
     const hashedPassword = await bcryptjs.hash(password, salt);
 
+    const users = await User.find();
+
     const newUser = new User({
       username,
       email,
       password: hashedPassword,
+      isAdmin: users.length === 0 ? true : false,
+      isVerified: users.length === 0 ? true : false,
     });
 
     const savedUser = await newUser.save();
 
-    console.log("User registered successfully: ", savedUser);
-
     // send verification email
 
-    const emailResponse = await sendEmail({
-      email,
-      emailType: "VERIFY",
-      userId: savedUser._id,
-    });
-
-    console.log("Email response: ", emailResponse);
+    if (users.length !== 0) {
+      await verifyEmail({
+        email,
+        userId: savedUser._id,
+      });
+    }
 
     return NextResponse.json({
       success: true,
       status: 200,
       message: "User registered successfully",
-      data: newUser,
+      data: savedUser,
     });
   } catch (error) {
     console.error("Error in signup: ", error);
