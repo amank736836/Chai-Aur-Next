@@ -32,28 +32,21 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    console.log("id", id);
-    console.log("password", password);
-
     let user;
 
     if (id.includes("@")) {
       user = await User.findOne({ email: id });
-      console.log("user finding by email", user);
     } else {
       user = await User.findOne({ username: id });
-      console.log("user finding by username", user);
     }
 
     if (!user) {
       return NextResponse.json({
         success: false,
         status: 400,
-        message: "User does not exist with this email",
+        message: "User does not exist with this email/username",
       });
     }
-
-    console.log("user", user);
 
     const validPassword = await bcryptjs.compare(password, user.password);
 
@@ -82,8 +75,6 @@ export async function POST(request: NextRequest) {
     const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
-
-    console.log("token", token);
 
     const response = NextResponse.json({
       success: true,
