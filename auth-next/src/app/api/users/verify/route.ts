@@ -19,7 +19,6 @@ export async function POST(request: NextRequest) {
 
     const user = await User.findOne({
       verifyToken: token,
-      verifyTokenExpiry: { $gt: Date.now() },
     });
 
     if (!user) {
@@ -30,9 +29,25 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    if (user.isVerified) {
+      return NextResponse.json({
+        success: false,
+        status: 400,
+        message: "Email already verified",
+      });
+    }
+
+    const currentTime = new Date();
+
+    if (user.verifyTokenExpiry < currentTime) {
+      return NextResponse.json({
+        success: false,
+        status: 400,
+        message: "Token expired",
+      });
+    }
+
     user.isVerified = true;
-    user.verifyToken = null;
-    user.verifyTokenExpiry = null;
 
     await user.save();
 
