@@ -25,7 +25,6 @@ function ProfilePage() {
     try {
       const response = await axios.get("/api/users/profile");
 
-      console.log("User details", response.data);
 
       setData(response.data.data);
 
@@ -37,7 +36,6 @@ function ProfilePage() {
       }
     } catch (error) {
       console.error(error);
-      console.log("Error getting user details");
       toast.error("Error getting user details");
       router.push("/login");
     } finally {
@@ -50,7 +48,6 @@ function ProfilePage() {
     try {
       const response = await axios.get("/api/users/logout");
 
-      console.log("Logged out", response.data);
 
       if (response.data.success) {
         toast.success("Logged out successfully");
@@ -60,7 +57,6 @@ function ProfilePage() {
       }
     } catch (error) {
       console.error(error);
-      console.log("Error logging out");
       toast.error("Error logging out");
     }
   };
