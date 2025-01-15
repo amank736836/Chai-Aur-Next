@@ -20,7 +20,6 @@ function VerifyEmailPage() {
     try {
       const response = await axios.post("/api/users/verify", { token });
 
-      console.log("Verified", response.data);
 
       if (response.data.success) {
         setVerified(true);
@@ -46,7 +45,6 @@ function VerifyEmailPage() {
 
     if (params.get("token")) {
       setToken(Token);
-      console.log("Token", Token);
     }
   }, []);
 
