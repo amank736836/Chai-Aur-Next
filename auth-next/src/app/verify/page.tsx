@@ -24,6 +24,7 @@ function VerifyEmailPage() {
 
       if (response.data.success) {
         setVerified(true);
+        setError(false);
         toast.success(response.data.message);
         router.push("/login");
       } else {
@@ -49,19 +50,19 @@ function VerifyEmailPage() {
     }
   }, []);
 
-  useEffect(() => {
-    if (token && token.length > 0) {
-      verifyUserEmail();
-    }
-  }, [token]);
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2 gap-4">
       <h1 className="text-4xl">Verify Email</h1>
 
-      <h2 className="p-2 bg-orange-500 text-black">
+      <h2 className="p-2 bg-green-500 text-black">
         {token && token.length > 0 ? (
-          <button onClick={verifyUserEmail}>Verify Email</button>
+          <button
+            onClick={verifyUserEmail}
+            disabled={token.length === 0 || error}
+            className="p-2 bg-green-500 text disabled:bg-red-500"
+          >
+            Verify Email
+          </button>
         ) : (
           "Invalid token"
         )}
