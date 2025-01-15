@@ -139,7 +139,11 @@ export default function SignupPage() {
         bg-green-500
         "
       >
-        {buttonDisabled ? "Please fill the fields" : "Signup"}
+        {buttonDisabled
+          ? loading
+            ? "Processing"
+            : "Fill all fields"
+          : "Signup"}
       </button>
       <Link href="/login">Visit Login Page</Link>
     </div>
