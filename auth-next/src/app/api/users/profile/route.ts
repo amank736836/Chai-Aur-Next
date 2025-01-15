@@ -6,10 +6,6 @@ import { NextRequest, NextResponse } from "next/server";
 connect();
 
 export async function GET(request: NextRequest) {
-  return NextResponse.json({ message: "Hello World from profile" });
-}
-
-export async function POST(request: NextRequest) {
   const userId = await getDataFromToken(request);
 
   if (!userId) {
