@@ -24,7 +24,6 @@ export default function SignupPage() {
     try {
       const response = await axios.post("/api/users/signup", user);
 
-      console.log("Signed up", response.data);
 
       if (response.data.success) {
         toast.success("Signed up successfully");
@@ -34,7 +33,6 @@ export default function SignupPage() {
       }
     } catch (error) {
       console.error(error);
-      console.log("Error signing up");
       toast.error("Error signing up");
     } finally {
       setLoading(false);
@@ -74,7 +72,6 @@ export default function SignupPage() {
         }
       );
 
-      console.log("Username check", response.data);
 
       if (response.data.success) {
         setUsernameAvailable(true);
