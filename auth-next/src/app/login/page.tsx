@@ -23,7 +23,6 @@ export default function LoginPage() {
     try {
       const response = await axios.post("/api/users/login", user);
 
-      console.log("Logged in", response.data);
 
       if (response.data.success) {
         toast.success("Logged in successfully");
@@ -33,7 +32,6 @@ export default function LoginPage() {
       }
     } catch (error) {
       console.error(error);
-      console.log("Error signing up");
       toast.error("Error signing up");
     } finally {
       setLoading(false);
