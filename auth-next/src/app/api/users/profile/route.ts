@@ -20,7 +20,6 @@ export async function GET(request: NextRequest) {
     "-password -forgotPasswordToken -forgotPasswordTokenExpiry -verifyToken -verifyTokenExpiry"
   );
 
-  console.log("user", user);
 
   return NextResponse.json({
     success: true,
